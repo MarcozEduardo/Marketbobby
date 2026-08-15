@@ -195,3 +195,33 @@ Feito com ❤️ por [Marcos Eduardo](https://www.linkedin.com/in/sir-marcos-edu
 **Portfolio 2026**
 
 </div>
+
+---
+
+## 📚 Case do Projeto
+
+O **MarketBobby** começou como uma ideia simples de lista de compras, mas rapidamente evoluiu para um sistema muito mais completo.
+
+A proposta inicial era criar algo visualmente bonito, intuitivo e útil no dia a dia. Ao longo das iterações, o projeto deixou de ser apenas um CRUD e passou a incorporar:
+
+- organização inteligente de itens
+- categorização automática
+- controle visual de status
+- cálculo dinâmico de gastos
+- reaproveitamento de listas
+- leitura assistida por IA
+- UX pensada para uso real no mercado
+
+O grande diferencial do projeto foi o processo de construção:  
+**Marcos Eduardo orquestrou toda a lógica, estrutura e experiência do sistema usando IA como ferramenta de produção**, refinando comportamento, layout, estados visuais e decisões de fluxo a cada nova interação.
+
+Mais do que escrever código, o foco foi:
+- entender o problema
+- modelar a experiência
+- observar falhas
+- corrigir a interface
+- transformar um app simples em um produto com cara de solução real
+
+Esse projeto representa a capacidade de transformar visão em software funcional, mesmo sem depender de conhecimento técnico tradicional completo da linguagem.
+
+➡️ Para mais detalhes, veja o arquivo [CASE_STUDY.md](./CASE_STUDY.md)
