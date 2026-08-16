@@ -1,4 +1,3 @@
-
 <div align="center">
 
 # 🛒 MarketBobby
@@ -8,12 +7,13 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![Groq](https://img.shields.io/badge/Groq_AI-000000?style=for-the-badge&logo=groq&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)
 
 <br>
 
-*Sistema completo de lista de compras com organização por IA, leitura de fotos de preço, gráficos de gastos e reutilização de listas — tudo em um único arquivo HTML.*
+*Sistema completo de lista de compras com organização por IA, leitura de fotos de preço, gráficos de gastos, reutilização de listas e suporte opcional a backend serverless via Firebase.*
 
 <br>
 
@@ -43,6 +43,8 @@
 - **Leitura por câmera** — tire foto da placa de preço no mercado
 - **IA preenche tudo** — nome, preço, marca e peso extraídos automaticamente
 - **Contexto de quantidade** — digite "3" antes da foto e a IA entende que são 3 unidades
+- **Suporte a encartes e múltiplos produtos** — leitura de fotos com mais de um item visível
+- **Fallback entre modelos** — se um modelo falhar, o sistema tenta outro automaticamente
 
 ### Gestão de Listas
 - **Finalizar carrinho** — marca lista como concluída com registro de data
@@ -60,16 +62,25 @@
 - **Pixel art** — carrinho de compras em pixel art no canvas
 - **Animações suaves** — transições, popups e feedback visual
 - **Dados persistentes** — tudo salvo no localStorage
-- **Zero dependência de backend** — funciona 100% no navegador
+- **Modo local ou com backend** — funciona no navegador com chave própria ou em modo demonstração via Firebase
 
 ---
 
 ## 🚀 Como Usar
 
 ### 1. Abrir o app
-Basta abrir o arquivo `index.html` no navegador. Sem instalação, sem servidor.
+Basta abrir o arquivo `index.html` no navegador. Sem instalação, sem servidor para a interface principal.
 
-### 2. Configurar IA (opcional)
+### 2. Escolher o modo de uso
+O sistema pode funcionar de duas formas:
+
+#### **Modo Bobby**
+Usa **Firebase Cloud Functions** para permitir demonstração pronta do sistema, sem exigir configuração manual de chave por parte do visitante.
+
+#### **Modo Local**
+Permite que o usuário configure suas próprias chaves de API, que ficam salvas apenas no navegador via `localStorage`.
+
+### 3. Configurar IA (opcional no modo local)
 Vá em **Configurações → APIs** e adicione suas chaves:
 
 | Serviço | Para quê | Onde conseguir |
@@ -78,18 +89,20 @@ Vá em **Configurações → APIs** e adicione suas chaves:
 | **Mistral** | Alternativa de organização | [console.mistral.ai](https://console.mistral.ai) |
 | **Google Gemini** | Leitura de fotos de preço | [aistudio.google.com](https://aistudio.google.com) |
 
-> As chaves ficam salvas **apenas no seu navegador** (localStorage). Nada é enviado para servidores externos além das próprias APIs.
+> No **modo local**, as chaves ficam salvas **apenas no seu navegador** (`localStorage`).  
+> No **modo Bobby**, as chamadas passam pelo Firebase para proteger as chaves da demonstração.
 
-### 3. Criar uma lista
+### 4. Criar uma lista
 - Toque em **Nova Lista**
 - Digite os itens separados por vírgula
 - Escolha **Organizar IA** ou **Direto**
 
-### 4. No mercado
+### 5. No mercado
 - Marque itens no carrinho com o check
-- Adicione preços tocando no campo `R$ ?`
+- Adicione preços tocando no campo de valor
 - Use o botão **+** para adicionar itens na hora
 - Tire foto da placa de preço com o botão de câmera
+- Use encartes, etiquetas e produtos como entrada para a IA
 
 ---
 
@@ -108,54 +121,95 @@ O MarketBobby entende contexto brasileiro:
 
 ### Compatibilidade de APIs
 
-O sistema funciona com qualquer API compatível com o formato OpenAI Chat Completions:
+O sistema trabalha com duas camadas de IA:
 
-- **Groq** (gratuito, rápido)
-- **Mistral AI** (gratuito até certo uso)
-- **OpenRouter** (acesso a múltiplos modelos)
+#### Organização textual
+Usa modelos compatíveis com o formato **OpenAI Chat Completions** para organizar listas informais.
+
+Exemplos de provedores suportados:
+- **Groq**
+- **Mistral AI**
+- **OpenRouter**
+- **DeepSeek**
+- **Together**
+- **Fireworks**
+- **Perplexity**
 - **Qualquer LLM** com endpoint compatível
 
-Para leitura de imagens:
-- **Google Gemini Vision** (gratuito)
+#### Leitura de imagens
+Usa **Google Gemini Vision** para:
+- foto de produto
+- placa de preço
+- encarte
+- cupom
+- lista fotografada
+
+### Estratégia de robustez
+O sistema foi refinado para usar:
+- **fallback entre modelos**
+- **fallback entre chaves**
+- **tratamento de erro**
+- **extração orientada a preço**
+- **normalização de resposta**
+
+Isso evita dependência cega de um único modelo.
 
 ---
 
 ## 🏗️ Arquitetura
+
+```text
 MarketBobby/
-├── index.html ← Aplicação completa (HTML + CSS + JS)
-├── README.md ← Este arquivo
-└── LICENSE ← MIT License
-
-text
-
+├── index.html        ← Aplicação principal (HTML + CSS + JS)
+├── README.md         ← Este arquivo
+├── CASE_STUDY.md     ← Bastidores, processo e decisões do projeto
+├── LICENSE           ← MIT License
+└── functions/        ← Firebase Cloud Functions
+```
 
 ### Stack
 - **Frontend:** HTML5 + CSS3 + JavaScript vanilla
 - **Gráficos:** Canvas API nativa
 - **Armazenamento:** localStorage
-- **IA:** API REST (Groq/Mistral/Gemini)
+- **Backend opcional:** Firebase Cloud Functions
+- **IA:** API REST (Groq/Mistral/Gemini e compatíveis)
 - **Dependências externas:** Font Awesome 6 + Google Fonts (Nunito)
 
-### Decisão de Arquivo Único
-O projeto inteiro vive em um único `index.html` por decisão de design:
-- Demonstra domínio da base (sem frameworks)
-- Portabilidade total (abre em qualquer lugar)
-- Facilita review de código
-- ~1500+ linhas organizadas e comentadas com índice
+### Decisão de Arquitetura
+O frontend principal vive em um único `index.html` por decisão de design:
+
+- demonstra domínio da base (sem frameworks)
+- mantém alta portabilidade
+- facilita review de código
+- permite abertura rápida em qualquer ambiente
+- reduz complexidade visual do projeto
+
+Ao mesmo tempo, o sistema evoluiu para suportar **backend serverless opcional**, permitindo proteger chaves, viabilizar o modo demonstração e ampliar a robustez da integração com IA.
 
 ---
 
 ## 📱 Screenshots
 
-> *Em breve — tire prints do app e adicione aqui*
+> *Em breve — adicionar prints do app em uso, da tela de lista, do resumo e da leitura por foto.*
 
 ---
 
 ## 🧑‍💻 Sobre o Projeto
 
-**MarketBobby** foi construído em **14/08/2026**, em aproximadamente **5 horas de iteração direta** entre **Marcos Eduardo** e **Bobby IA**.
+**MarketBobby** foi iniciado em **14/08/2026**.
 
-Nenhuma linha de código foi escrita manualmente. Todo o sistema foi **orquestrado por Marcos** e **produzido por Bobby IA** — utilizada como instrumento de desenvolvimento.
+A base funcional do sistema nasceu em aproximadamente **5 horas de iteração direta**, mas o projeto evoluiu muito além disso, com cerca de **15 horas adicionais de refinamento técnico**, integração com Firebase, OCR de preços, fallback entre modelos, ajustes de parser e melhorias de UX.
+
+Ou seja: a primeira versão saiu rápido, mas a maturidade do sistema veio na batalha.
+
+O projeto deixou de ser apenas uma lista de compras e passou a ser um estudo prático de:
+
+- integração com IA
+- experiência de usuário
+- debugging em camadas
+- fallback entre provedores
+- leitura de imagem
+- arquitetura híbrida entre frontend local e backend serverless
 
 ### O Processo
 
@@ -166,19 +220,36 @@ Marcos não tem formação tradicional em programação. Mas tem algo que muitos
 - Arquiteta fluxos de interface
 - Analisa engenharia de interação
 - Itera sem descansar até atingir excelência
+- Não aceita solução preguiçosa
+- Testa cenário real
+- Insiste até o sistema fazer sentido
 
-**Hiperfocado e perfeccionista**, ele guia a IA linha por linha, iteração após iteração, até o resultado ficar no padrão que imaginou.
+**Hiperfocado e perfeccionista**, conduziu a IA linha por linha, iteração após iteração, até o resultado ficar no padrão que imaginou.
+
+### O que foi necessário enfrentar
+Ao longo da construção, o projeto passou por desafios reais como:
+
+- integração com Firebase Cloud Functions
+- deploy quebrando por mudança de versão de biblioteca
+- `functions.config()` removido em versões novas
+- benchmark e escolha de modelos de IA
+- extração de preço em formato brasileiro
+- parser quebrando centavos por causa da vírgula
+- duplicidade de função no frontend
+- placeholder mascarando valor real
+- ajustes finos de loading e feedback visual
 
 ### Ficha Técnica
 
 | Item | Detalhe |
 |------|---------|
-| **Data** | 14 de agosto de 2026 |
-| **Tempo** | ~5 horas de iteração |
+| **Data de início** | 14 de agosto de 2026 |
+| **Base funcional** | ~5 horas |
+| **Refinamento adicional** | ~15 horas |
 | **Método** | Orquestração humana + produção IA |
-| **Custo** | R$ 0 (IA gratuita) |
-| **Código manual** | 0 linhas |
-| **Resultado** | Sistema completo e funcional |
+| **Custo** | R$ 0 (IA gratuita + backend leve) |
+| **Código manual** | 0 linhas em escrita tradicional |
+| **Resultado** | Sistema funcional, demonstrável e pronto para portfólio |
 
 ---
 
@@ -210,10 +281,13 @@ A proposta inicial era criar algo visualmente bonito, intuitivo e útil no dia a
 - cálculo dinâmico de gastos
 - reaproveitamento de listas
 - leitura assistida por IA
+- OCR orientado a preço
+- fallback entre modelos
+- backend opcional com Firebase
 - UX pensada para uso real no mercado
 
 O grande diferencial do projeto foi o processo de construção:  
-**Marcos Eduardo orquestrou toda a lógica, estrutura e experiência do sistema usando IA como ferramenta de produção**, refinando comportamento, layout, estados visuais e decisões de fluxo a cada nova interação.
+**Marcos Eduardo orquestrou toda a lógica, estrutura e experiência do sistema usando IA como ferramenta de produção**, refinando comportamento, layout, estados visuais, fallback, parser, integração com imagem e decisões de fluxo a cada nova interação.
 
 Mais do que escrever código, o foco foi:
 - entender o problema
