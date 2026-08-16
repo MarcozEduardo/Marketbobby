@@ -1,0 +1,26 @@
+# ═══════════════════════════════════════
+# Ignorar dependências pesadas
+# ═══════════════════════════════════════
+node_modules/
+functions/node_modules/
+
+# ═══════════════════════════════════════
+# Ignorar arquivos de chaves secretas e ambiente (MUITO IMPORTANTE)
+# ═══════════════════════════════════════
+.env
+.env.*
+.runtimeconfig.json
+functions/.env
+
+# ═══════════════════════════════════════
+# Ignorar arquivos de cache do Firebase
+# ═══════════════════════════════════════
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# ═══════════════════════════════════════
+# Ignorar lixo de sistema operacional
+# ═══════════════════════════════════════
+.DS_Store
+Thumbs.db
